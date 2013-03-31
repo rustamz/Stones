@@ -11,7 +11,7 @@ namespace Stones
         /// <summary>
         /// Главная точка входа для приложения.
         /// </summary>
-        /// hello world :))
+        /// hello world :)) 1234567890
         [STAThread]
         static void Main()
         {
