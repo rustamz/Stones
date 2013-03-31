@@ -16,7 +16,6 @@ namespace Stones
 
         private void tsmiClose_Click(object sender, EventArgs e)
         {
-            // Вот это новый коммит
             Close();
         }
 
