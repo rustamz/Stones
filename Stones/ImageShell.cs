@@ -118,9 +118,12 @@ namespace Stones
             // подготовка выходного изображения
             DestinationBmp = new Bitmap(SourceBmp.Width, SourceBmp.Height);
             
-            // подготвка матриц весов
+            // Ядро по Собелю
             int[,] gx = new int[,] { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
-            int[,] gy = new int[,] { { 1, 2, 1 }, { 0, 0, 0 }, { -1, -2, -1 } };
+            int[,] gy = new int[,] { { -1, -2, -1 }, { 0, 0, 0 }, { 1, 2, 1 } };
+            // Ядро по Щарру
+            //int[,] gx = new int[,] { { 3, 0, -3 }, { -10, 0, 10 }, { 3, 0, -3 } };
+            //int[,] gy = new int[,] { { 3, 10, 3 }, { 0, 0, 0 }, { -3, -10, -3 } };
 
             // вычисление
             for (int i = 1; i < GraySource.Height - 1; i++)

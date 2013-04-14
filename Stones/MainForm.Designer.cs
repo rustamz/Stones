@@ -38,9 +38,11 @@
             this.tsmiService = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiMakeGray = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiMonochrome = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSobel = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmiDBManager = new System.Windows.Forms.ToolStripMenuItem();
             this.sbStatusBar = new System.Windows.Forms.StatusStrip();
             this.tsslFileName = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tsmiSobel = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlImageContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbMainImage)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -54,7 +56,7 @@
             this.pnlImageContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlImageContainer.Location = new System.Drawing.Point(0, 24);
             this.pnlImageContainer.Name = "pnlImageContainer";
-            this.pnlImageContainer.Size = new System.Drawing.Size(494, 337);
+            this.pnlImageContainer.Size = new System.Drawing.Size(494, 315);
             this.pnlImageContainer.TabIndex = 0;
             // 
             // pbMainImage
@@ -111,7 +113,9 @@
             this.tsmiService.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiMakeGray,
             this.tsmiMonochrome,
-            this.tsmiSobel});
+            this.tsmiSobel,
+            this.toolStripMenuItem2,
+            this.tsmiDBManager});
             this.tsmiService.Name = "tsmiService";
             this.tsmiService.Size = new System.Drawing.Size(59, 20);
             this.tsmiService.Text = "Сервис";
@@ -130,6 +134,25 @@
             this.tsmiMonochrome.Text = "В монохром";
             this.tsmiMonochrome.Click += new System.EventHandler(this.tsmiMonochrome_Click);
             // 
+            // tsmiSobel
+            // 
+            this.tsmiSobel.Name = "tsmiSobel";
+            this.tsmiSobel.Size = new System.Drawing.Size(172, 22);
+            this.tsmiSobel.Text = "Оператор Cобеля";
+            this.tsmiSobel.Click += new System.EventHandler(this.tsmiSobel_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(169, 6);
+            // 
+            // tsmiDBManager
+            // 
+            this.tsmiDBManager.Name = "tsmiDBManager";
+            this.tsmiDBManager.Size = new System.Drawing.Size(172, 22);
+            this.tsmiDBManager.Text = "Редактировать БД";
+            this.tsmiDBManager.Click += new System.EventHandler(this.tsmiDBManager_Click);
+            // 
             // sbStatusBar
             // 
             this.sbStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -146,21 +169,14 @@
             this.tsslFileName.Size = new System.Drawing.Size(69, 17);
             this.tsslFileName.Text = "Имя файла";
             // 
-            // tsmiSobel
-            // 
-            this.tsmiSobel.Name = "tsmiSobel";
-            this.tsmiSobel.Size = new System.Drawing.Size(172, 22);
-            this.tsmiSobel.Text = "Оператор Cобеля";
-            this.tsmiSobel.Click += new System.EventHandler(this.tsmiSobel_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(494, 361);
-            this.Controls.Add(this.sbStatusBar);
             this.Controls.Add(this.pnlImageContainer);
             this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.sbStatusBar);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "Stones";
@@ -191,6 +207,8 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiMakeGray;
         private System.Windows.Forms.ToolStripMenuItem tsmiMonochrome;
         private System.Windows.Forms.ToolStripMenuItem tsmiSobel;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem tsmiDBManager;
     }
 }
 

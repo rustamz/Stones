@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using PictureDBManager;
 
 
 namespace Stones
@@ -65,6 +66,11 @@ namespace Stones
                 bufferImage.Soble();
                 pbMainImage.Image = bufferImage.Image;
             }
+        }
+
+        private void tsmiDBManager_Click(object sender, EventArgs e)
+        {
+            (new DBManagerUIForm()).ShowDialog(this);
         }
     }
 }
