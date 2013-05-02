@@ -43,6 +43,7 @@
             this.tsmiDBManager = new System.Windows.Forms.ToolStripMenuItem();
             this.sbStatusBar = new System.Windows.Forms.StatusStrip();
             this.tsslFileName = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tsmiShowTraining = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlImageContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbMainImage)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -115,7 +116,8 @@
             this.tsmiMonochrome,
             this.tsmiSobel,
             this.toolStripMenuItem2,
-            this.tsmiDBManager});
+            this.tsmiDBManager,
+            this.tsmiShowTraining});
             this.tsmiService.Name = "tsmiService";
             this.tsmiService.Size = new System.Drawing.Size(59, 20);
             this.tsmiService.Text = "Сервис";
@@ -169,6 +171,13 @@
             this.tsslFileName.Size = new System.Drawing.Size(69, 17);
             this.tsslFileName.Text = "Имя файла";
             // 
+            // tsmiShowTraining
+            // 
+            this.tsmiShowTraining.Name = "tsmiShowTraining";
+            this.tsmiShowTraining.Size = new System.Drawing.Size(172, 22);
+            this.tsmiShowTraining.Text = "Обучение";
+            this.tsmiShowTraining.Click += new System.EventHandler(this.tsmiShowTraining_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -209,6 +218,7 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiSobel;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem tsmiDBManager;
+        private System.Windows.Forms.ToolStripMenuItem tsmiShowTraining;
     }
 }
 

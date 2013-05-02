@@ -10,7 +10,7 @@ namespace Stones
 {
     public partial class MainForm : Form
     {
-        ImageShell bufferImage = new ImageShell();
+        private ImageShell bufferImage = new ImageShell();
 
         public MainForm()
         {
@@ -71,6 +71,11 @@ namespace Stones
         private void tsmiDBManager_Click(object sender, EventArgs e)
         {
             (new DBManagerUIForm()).ShowDialog(this);
+        }
+
+        private void tsmiShowTraining_Click(object sender, EventArgs e)
+        {
+            (new TrainingForm()).ShowDialog(this);
         }
     }
 }

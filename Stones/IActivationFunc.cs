@@ -7,6 +7,7 @@ namespace Stones
     interface IActivationFunc
     {
         double GetValue(double X);
+        double GetWeight(double X, double F);
         IActivationFunc Clone();
     }
 }

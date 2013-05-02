@@ -186,6 +186,48 @@ namespace Stones
             Sobel(originalBitmap, out workBitmap);
         }
 
+        public byte[,] RedSource()
+        {
+            byte[,] Result = new byte[Image.Width, Image.Height];
+            for (int i = 0; i < Image.Width; i++)
+            {
+                for (int j = 0; j < Image.Height; j++)
+                {
+                    Result[i, j] = Image.GetPixel(i, j).R;   
+                }
+            }
+
+            return Result;
+        }
+
+        public byte[,] GreenSource()
+        {
+            byte[,] Result = new byte[Image.Width, Image.Height];
+            for (int i = 0; i < Image.Width; i++)
+            {
+                for (int j = 0; j < Image.Height; j++)
+                {
+                    Result[i, j] = Image.GetPixel(i, j).G;
+                }
+            }
+
+            return Result;
+        }
+
+        public byte[,] BlueSource()
+        {
+            byte[,] Result = new byte[Image.Width, Image.Height];
+            for (int i = 0; i < Image.Width; i++)
+            {
+                for (int j = 0; j < Image.Height; j++)
+                {
+                    Result[i, j] = Image.GetPixel(i, j).B;
+                }
+            }
+
+            return Result;
+        }
+
         #endregion
     }
 }

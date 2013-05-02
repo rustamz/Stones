@@ -15,11 +15,6 @@ namespace Stones
         private double weight = 0;
 
         /// <summary>
-        /// Массив входных параметров
-        /// </summary>
-        private double[,] input = null;
-
-        /// <summary>
         /// Функция активации.
         /// </summary>
         private IActivationFunc actFunc = null;
@@ -45,28 +40,6 @@ namespace Stones
             this.Weight = Weight;
         }
 
-        /// <summary>
-        /// Конструктор в возможностью установки количества входов
-        /// </summary>
-        /// <param name="Width">Ширина входного поля.</param>
-        /// <param name="Height">Выстоа входного поля.</param>
-        public Neuron(int Width, int Height)
-        {
-            input = new double[Width, Height];
-        }
-
-        /// <summary>
-        /// Конструктор в возможностью установки веса нейрона и количества входов
-        /// </summary>
-        /// <param name="Weight">Устанавливаемый вес.</param>
-        /// <param name="Width">Ширина входного поля.</param>
-        /// <param name="Height">Выстоа входного поля.</param>
-        public Neuron(double Weight, int Width, int Height)
-        {
-            this.Weight = Weight;
-            input = new double[Width, Height];
-        }
-
 
         /// <summary>
         /// Конструктор с установкой функции активации
@@ -88,31 +61,6 @@ namespace Stones
             this.actFunc = ActFunc.Clone();
         }
 
-        /// <summary>
-        /// Конструктор в возможностью установки количества входов
-        /// </summary>
-        /// <param name="Width">Ширина входного поля.</param>
-        /// <param name="Height">Выстоа входного поля.</param>
-        /// <param name="ActFunc">Функция активации.</param>
-        public Neuron(int Width, int Height, IActivationFunc ActFunc)
-        {
-            input = new double[Width, Height];
-            this.actFunc = ActFunc.Clone();
-        }
-
-        /// <summary>
-        /// Конструктор в возможностью установки веса нейрона и количества входов
-        /// </summary>
-        /// <param name="Weight">Устанавливаемый вес.</param>
-        /// <param name="Width">Ширина входного поля.</param>
-        /// <param name="Height">Выстоа входного поля.</param>
-        /// <param name="ActFunc">Функция активации.</param>
-        public Neuron(double Weight, int Width, int Height, IActivationFunc ActFunc)
-        {
-            this.Weight = Weight;
-            input = new double[Width, Height];
-            this.actFunc = ActFunc.Clone();
-        }
 
         #endregion
 
@@ -124,102 +72,31 @@ namespace Stones
         public double Weight
         {
             get { return weight; }
-            set 
-            {
-                // ограничиваем возможные значения веса отрезком значений от 0 до 1
-                if (value < 0)
-                {
-                    this.weight = 0;
-                }
-                else if (value > 0)
-                {
-                    this.weight = 1;
-                }
-                else
-                {
-                    this.weight = value;
-                }  
-            }
-        }
-
-        /// <summary>
-        /// Возвращает ширину входного слоя.
-        /// </summary>
-        public int Width
-        {
-            get { return input != null ? input.GetLength(0) : 0; }
-        }
-
-        /// <summary>
-        /// Возвращает ширину входного слоя.
-        /// </summary>
-        public int Height
-        {
-            get { return input != null ? input.GetLength(1) : 0; }
-        }
-
-        /// <summary>
-        /// Предоставляет доступ к полю входных параметров.
-        /// </summary>
-        /// <param name="PosByWidth">Индекс по ширине входного поля.</param>
-        /// <param name="PosByHeight">Индекс по высоте входного поля.</param>
-        /// <returns>Значение параметра входного поля.</returns>
-        public double this[int PosByWidth, int PosByHeight]
-        {
-            get 
-            {
-                if (PosByWidth < 0 || PosByWidth >= input.GetLength(0))
-                    throw new ArgumentOutOfRangeException("PosByWidth");
-
-                if (PosByHeight < 0 || PosByHeight >= input.GetLength(1))
-                    throw new ArgumentOutOfRangeException("PosByHeight");
-
-                return input[PosByWidth, PosByHeight]; 
-            }
-
-            set 
-            {
-                if (PosByWidth < 0 || PosByWidth >= input.GetLength(0))
-                    throw new ArgumentOutOfRangeException("PosByWidth");
-
-                if (PosByHeight < 0 || PosByHeight >= input.GetLength(1))
-                    throw new ArgumentOutOfRangeException("PosByHeight");
-
-                input[PosByWidth,PosByHeight] = value; 
-            }
+            set { this.weight = value; }
         }
 
         #endregion
 
         #region Публичные методы
 
-        public double Output()
+        /// <summary>
+        /// Вычисляет выход нейрона
+        /// </summary>
+        /// <param name="Summa"></param>
+        /// <returns></returns>
+        public double Output(double Summa)
         {
             if (actFunc == null)
             {
                 throw new MemberAccessException("Не установлена функция активации");
             }
 
-            if (input == null)
-            {
-                throw new MemberAccessException("Поле входных параметров не установлено");
-            }
+            return actFunc.GetValue(weight * Summa);
+        }
 
-            if (input.GetLength(0) == 0 || input.GetLength(1) == 0)
-            {
-                throw new MemberAccessException("Поле входных параметров имеет нулевой размер");
-            }
-
-            double Summa = 0;
-            for (int i = 0, i_end = input.GetLength(0); i < i_end; i++)
-            {
-                for (int j = 0, j_end = input.GetLength(1); j < j_end; j++)
-                {
-                    Summa += weight * input[i, j];
-                }
-            }
-
-            return actFunc.GetValue(Summa);
+        public void SetWeight(double InputSignal, double OutputSignal)
+        {
+ 
         }
 
         #endregion
