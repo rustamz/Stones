@@ -2,11 +2,34 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Data.SqlServerCe;
 
 namespace Stones
 {
+    
     public partial class TrainingForm : Form
     {
+        // Хранения названия и идентификатора категории в Combobox -е
+        private class CategoryCBItem
+        {
+            public int Id { get; set; }
+            public string Description { get; set; }
+
+            public CategoryCBItem(int Id, string Description)
+            {
+                this.Id = Id;
+                this.Description = Description;
+            }
+
+            public override string ToString()
+            {
+                return Description;
+            }
+        }
+
+        // Соединение для работы с БД
+        SqlCeConnection mainDBConnection = null;
+        
         private ImageShell bufferImage = new ImageShell();
 
         public TrainingForm()
@@ -14,33 +37,23 @@ namespace Stones
             InitializeComponent();
         }
 
-        private void btnLoadOrigin_Click(object sender, EventArgs e)
+        private void LoadCategory()
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Файлы изображений (*.bmp, *.jpg, *.png)|*.bmp;*.jpg;*.png";
-            if (ofd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+            if (mainDBConnection == null)
             {
-                // загружаем выбранную картинку
-                try
-                {
-                    Bitmap bm = new Bitmap(ofd.FileName);
-                    if (bm.Width != Program.NeuronSize || bm.Height != Program.NeuronSize)
-                    {
-                        MessageBox.Show(this, "Возможно выбрать изображение только с размером " + Program.NeuronSize.ToString() + "*" + Program.NeuronSize.ToString() + "\n\rВ дальнейшем нужно запилить автообрезатель.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
+                return;
+            }
 
-                    bufferImage.Image = new Bitmap(ofd.FileName);
-                    if (bufferImage.Image != null)
-                    {
-                        bufferImage.MakeMonochrome(127);
-                        pbOriginImage.Image = bufferImage.Image;
-                    }
-                }
-                catch (Exception Ex)
-                {
-                    MessageBox.Show(this, Ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+            SqlCeCommand scc = new SqlCeCommand();
+            scc.Connection = mainDBConnection;
+
+            scc.CommandText = "SELECT TemplateCategoryId, Description FROM TemplateCategory";
+
+            SqlCeDataReader scedr = scc.ExecuteReader();
+
+            while (scedr.Read())
+            {
+                CBCategory.Items.Add(new CategoryCBItem((int)scedr["TemplateCategoryId"], scedr["Description"].ToString()));
             }
         }
 
@@ -48,6 +61,11 @@ namespace Stones
         {
             using (var dialog = new FolderBrowserDialog())
             {
+                if (System.IO.Directory.Exists(tbImagesPath.Text))
+                {
+                    dialog.SelectedPath = tbImagesPath.Text;
+                }
+
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     tbImagesPath.Text = dialog.SelectedPath;
@@ -57,18 +75,15 @@ namespace Stones
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            if (pbOriginImage.Image == null)
-            {
-                MessageBox.Show(this, "Установите эталонное изображение!", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
+            // Проверка на правильность указания директории с эталонами
             if (!System.IO.Directory.Exists(tbImagesPath.Text))
             {
                 MessageBox.Show(this, "Директория \"" + tbImagesPath.Text + "\" не существует!", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            
+
+
+            // получаем все файлы из директории с эталонами
             string[] Files = System.IO.Directory.GetFiles(tbImagesPath.Text);
             List<string> ImageFiles = new List<string>();
 
@@ -83,21 +98,12 @@ namespace Stones
                 }
             }
 
-            // Преобразовываем эталонное изображение в массив чисел от 0 до 255
-            // так как изображение монохромное, то достаточно извлеч только один цвет
-            byte[,] Etalon = bufferImage.RedSource();
-            // преобразуем в double
-            double[,] EtalonOutput = new double[Etalon.GetLength(0), Etalon.GetLength(1)];
-            for (int i = 0; i < Etalon.GetLength(0); i++)
-            {
-                for (int j = 0; j < Etalon.GetLength(1); j++)
-                {
-                    EtalonOutput[i, j] = Etalon[i, j] > 127 ? 1 : 0;
-                }
-            }
+            int ImageCount = 0;
+            int GoodImageCount = 0;
 
             // Начинаем обучение
             Program.dlp.ClearWeight();
+            ImageCount = ImageFiles.Count;
             for (int i_files = 0; i_files < ImageFiles.Count; i_files++)
             {
                 // загружаем изображение
@@ -110,7 +116,6 @@ namespace Stones
                 ImageShell ishell = new ImageShell(ImageBitmap);
                 
                 // создаем контур изображения
-                //ishell.Soble();
                 ishell.MakeMonochrome(127);
 
                 byte[,] InputSignalByte = ishell.RedSource();
@@ -134,12 +139,96 @@ namespace Stones
                 }
                 
 
-                Program.dlp.Training(EtalonOutput);
-
+                Program.dlp.Training();
+                GoodImageCount++;
             }
 
             pbResultBox.Image = Program.dlp.BitmapFromFirstLayer();
-            //Program.dlp.SaveFirstLayerToFile("WeightMatrix.txt");    
+
+            label6.Text = ImageCount.ToString();
+            label7.Text = GoodImageCount.ToString();
+            label8.Text = (ImageCount - GoodImageCount).ToString();
+            
+            tbDescription.Enabled = true;
+            btnSave.Enabled = true;
+            CBCategory.Enabled = true;
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            // Размеры матрицы
+            int WeightMatrixWidth = Program.dlp.Width;
+            int WeightMatrixHeight = Program.dlp.Height;
+
+            // Описание шаблона
+            string Description = tbDescription.Text;
+
+            // Категория к которой относится шаблон
+            int CategoryId = -1;
+            if (CBCategory.SelectedItem != null)
+            {
+                CategoryId = ((CategoryCBItem)CBCategory.SelectedItem).Id;
+            }
+
+            // Текущая дата и время
+            DateTime CurrentTime = DateTime.Now;
+
+            // Бинарный поток матрицы весов
+            byte[] WeightMatrix = Program.dlp.GetBinary();
+
+            if (Description.Length == 0)
+            {
+                MessageBox.Show(this, "Установите описание для записи в БД", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (CategoryId == -1)
+            {
+                MessageBox.Show(this, "Выберите категорию для записи в БД", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            SqlCeCommand scc = new SqlCeCommand();
+            scc.Connection = mainDBConnection;
+
+            scc.CommandText = "INSERT INTO Template (Description, TemplateCategoryId, CreationDate, Data, DataWidth, DataHeight) \n\r" +
+            "  VALUES(@Description, @TemplateCategoryId, @CreationDate, @Data, @DataWidth, @DataHeight)";
+
+
+            scc.Parameters.Add("@Description", System.Data.SqlDbType.NVarChar).Value = Description;
+            scc.Parameters.Add("@TemplateCategoryId", System.Data.SqlDbType.Int).Value = CategoryId;
+            scc.Parameters.Add("@CreationDate", System.Data.SqlDbType.DateTime).Value = CurrentTime;
+            scc.Parameters.Add("@Data", System.Data.SqlDbType.Image).Value = WeightMatrix;
+            scc.Parameters.Add("@DataWidth", System.Data.SqlDbType.Int).Value = WeightMatrixWidth;
+            scc.Parameters.Add("@DataHeight", System.Data.SqlDbType.Int).Value = WeightMatrixHeight;
+           
+            try
+            {
+                scc.ExecuteNonQuery();
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show(this, Ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            DialogResult = System.Windows.Forms.DialogResult.OK;
+            Close();
+        }
+
+        private void TrainingForm_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                mainDBConnection = new SqlCeConnection("Data Source = \"" + Program.MainDataBaseName + "\"");
+                mainDBConnection.Open();
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show(this, Ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                mainDBConnection = null;
+            }
+
+            LoadCategory();
         }
     }
 }

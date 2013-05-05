@@ -1,6 +1,6 @@
-﻿namespace PictureDBManager
+﻿namespace Stones
 {
-    partial class DBManagerUIForm
+    partial class ViewTemplateForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,23 +28,25 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DBManagerUIForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewTemplateForm));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.TemplateList = new System.Windows.Forms.ListView();
             this.lvcImageName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.button1 = new System.Windows.Forms.Button();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ImageContainer = new System.Windows.Forms.Panel();
+            this.MainImage = new System.Windows.Forms.PictureBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.tsbAddImg = new System.Windows.Forms.ToolStripButton();
             this.tsbDeleteImg = new System.Windows.Forms.ToolStripButton();
-            this.ImageContainer = new System.Windows.Forms.Panel();
-            this.MainImage = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.toolStrip1.SuspendLayout();
             this.ImageContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainImage)).BeginInit();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -57,43 +59,69 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.listView1);
+            this.splitContainer1.Panel1.Controls.Add(this.TemplateList);
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.ImageContainer);
-            this.splitContainer1.Size = new System.Drawing.Size(607, 386);
-            this.splitContainer1.SplitterDistance = 208;
+            this.splitContainer1.Size = new System.Drawing.Size(607, 187);
+            this.splitContainer1.SplitterDistance = 401;
             this.splitContainer1.TabIndex = 2;
             // 
-            // listView1
+            // TemplateList
             // 
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.lvcImageName});
-            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView1.Location = new System.Drawing.Point(0, 0);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(208, 386);
-            this.listView1.TabIndex = 1;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
-            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
+            this.TemplateList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lvcImageName,
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3});
+            this.TemplateList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TemplateList.FullRowSelect = true;
+            this.TemplateList.Location = new System.Drawing.Point(0, 0);
+            this.TemplateList.Name = "TemplateList";
+            this.TemplateList.Size = new System.Drawing.Size(401, 187);
+            this.TemplateList.TabIndex = 1;
+            this.TemplateList.UseCompatibleStateImageBehavior = false;
+            this.TemplateList.View = System.Windows.Forms.View.Details;
+            this.TemplateList.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             // 
             // lvcImageName
             // 
-            this.lvcImageName.Text = "Имя картинки";
-            this.lvcImageName.Width = 150;
+            this.lvcImageName.Text = "Описание";
+            this.lvcImageName.Width = 133;
             // 
-            // button1
+            // columnHeader1
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(544, 420);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Закрыть";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.columnHeader1.Text = "Ширина";
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Высота";
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Дата создания";
+            this.columnHeader3.Width = 100;
+            // 
+            // ImageContainer
+            // 
+            this.ImageContainer.AutoScroll = true;
+            this.ImageContainer.Controls.Add(this.MainImage);
+            this.ImageContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ImageContainer.Location = new System.Drawing.Point(0, 0);
+            this.ImageContainer.Name = "ImageContainer";
+            this.ImageContainer.Size = new System.Drawing.Size(202, 187);
+            this.ImageContainer.TabIndex = 0;
+            // 
+            // MainImage
+            // 
+            this.MainImage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MainImage.Location = new System.Drawing.Point(0, 0);
+            this.MainImage.Name = "MainImage";
+            this.MainImage.Size = new System.Drawing.Size(202, 187);
+            this.MainImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.MainImage.TabIndex = 3;
+            this.MainImage.TabStop = false;
             // 
             // toolStrip1
             // 
@@ -126,34 +154,14 @@
             this.tsbDeleteImg.Text = "Удалить изображение";
             this.tsbDeleteImg.Click += new System.EventHandler(this.tsbDeleteImg_Click);
             // 
-            // ImageContainer
-            // 
-            this.ImageContainer.AutoScroll = true;
-            this.ImageContainer.Controls.Add(this.MainImage);
-            this.ImageContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ImageContainer.Location = new System.Drawing.Point(0, 0);
-            this.ImageContainer.Name = "ImageContainer";
-            this.ImageContainer.Size = new System.Drawing.Size(395, 386);
-            this.ImageContainer.TabIndex = 0;
-            // 
-            // MainImage
-            // 
-            this.MainImage.Location = new System.Drawing.Point(0, 0);
-            this.MainImage.Name = "MainImage";
-            this.MainImage.Size = new System.Drawing.Size(300, 300);
-            this.MainImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.MainImage.TabIndex = 3;
-            this.MainImage.TabStop = false;
-            // 
-            // DBManagerUIForm
+            // ViewTemplateForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(631, 455);
+            this.ClientSize = new System.Drawing.Size(631, 223);
             this.Controls.Add(this.toolStrip1);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.splitContainer1);
-            this.Name = "DBManagerUIForm";
+            this.Name = "ViewTemplateForm";
             this.Text = "Редактировать БД";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DBManagerUIForm_FormClosed);
             this.Load += new System.EventHandler(this.DBManagerUIForm_Load);
@@ -161,11 +169,11 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
             this.ImageContainer.ResumeLayout(false);
             this.ImageContainer.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainImage)).EndInit();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -174,13 +182,15 @@
         #endregion
 
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ListView TemplateList;
         private System.Windows.Forms.ColumnHeader lvcImageName;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton tsbAddImg;
         private System.Windows.Forms.ToolStripButton tsbDeleteImg;
         private System.Windows.Forms.Panel ImageContainer;
         private System.Windows.Forms.PictureBox MainImage;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
     }
 }

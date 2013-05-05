@@ -41,9 +41,10 @@
             this.tsmiSobel = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmiDBManager = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiShowTraining = new System.Windows.Forms.ToolStripMenuItem();
             this.sbStatusBar = new System.Windows.Forms.StatusStrip();
             this.tsslFileName = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tsmiShowTraining = new System.Windows.Forms.ToolStripMenuItem();
+            this.опознатьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlImageContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbMainImage)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -117,7 +118,8 @@
             this.tsmiSobel,
             this.toolStripMenuItem2,
             this.tsmiDBManager,
-            this.tsmiShowTraining});
+            this.tsmiShowTraining,
+            this.опознатьToolStripMenuItem});
             this.tsmiService.Name = "tsmiService";
             this.tsmiService.Size = new System.Drawing.Size(59, 20);
             this.tsmiService.Text = "Сервис";
@@ -155,6 +157,13 @@
             this.tsmiDBManager.Text = "Редактировать БД";
             this.tsmiDBManager.Click += new System.EventHandler(this.tsmiDBManager_Click);
             // 
+            // tsmiShowTraining
+            // 
+            this.tsmiShowTraining.Name = "tsmiShowTraining";
+            this.tsmiShowTraining.Size = new System.Drawing.Size(172, 22);
+            this.tsmiShowTraining.Text = "Обучение";
+            this.tsmiShowTraining.Click += new System.EventHandler(this.tsmiShowTraining_Click);
+            // 
             // sbStatusBar
             // 
             this.sbStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -171,12 +180,12 @@
             this.tsslFileName.Size = new System.Drawing.Size(69, 17);
             this.tsslFileName.Text = "Имя файла";
             // 
-            // tsmiShowTraining
+            // опознатьToolStripMenuItem
             // 
-            this.tsmiShowTraining.Name = "tsmiShowTraining";
-            this.tsmiShowTraining.Size = new System.Drawing.Size(172, 22);
-            this.tsmiShowTraining.Text = "Обучение";
-            this.tsmiShowTraining.Click += new System.EventHandler(this.tsmiShowTraining_Click);
+            this.опознатьToolStripMenuItem.Name = "опознатьToolStripMenuItem";
+            this.опознатьToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.опознатьToolStripMenuItem.Text = "Опознать";
+            this.опознатьToolStripMenuItem.Click += new System.EventHandler(this.опознатьToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -189,6 +198,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "Stones";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.pnlImageContainer.ResumeLayout(false);
             this.pnlImageContainer.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbMainImage)).EndInit();
@@ -219,6 +229,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem tsmiDBManager;
         private System.Windows.Forms.ToolStripMenuItem tsmiShowTraining;
+        private System.Windows.Forms.ToolStripMenuItem опознатьToolStripMenuItem;
     }
 }
 

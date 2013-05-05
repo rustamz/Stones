@@ -10,6 +10,7 @@ namespace Stones
     static class Program
     {
         public const int NeuronSize = 200;
+        public const string MainDataBaseName = "StonesDB.sdf";
         public static DoubleLayerPerceptron dlp = null; //new DoubleLayerPerceptron(200, 200);
         
         /// <summary>

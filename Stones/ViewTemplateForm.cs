@@ -4,14 +4,13 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Data.SqlServerCe;
 
-namespace PictureDBManager
+namespace Stones
 {
-    public partial class DBManagerUIForm : Form
+    public partial class ViewTemplateForm : Form
     {
         private SqlCeConnection mainDBConnection = null;
-        private int CurrentRecordID = -1;
 
-        public DBManagerUIForm()
+        public ViewTemplateForm()
         {
             InitializeComponent();
         }
@@ -20,7 +19,7 @@ namespace PictureDBManager
         {
             try
             {
-                mainDBConnection = new SqlCeConnection("Data Source = PicturesDB.sdf");
+                mainDBConnection = new SqlCeConnection("Data Source = \"" + Program.MainDataBaseName + "\"");
                 mainDBConnection.Open();
             }
             catch (Exception Ex)
@@ -28,19 +27,19 @@ namespace PictureDBManager
                 MessageBox.Show(this, Ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            LoadImages();
+            LoadTemplates();
         }
 
-        private void LoadImages()
+        private void LoadTemplates()
         {
-            ListView WorkedListView = listView1;
+            ListView WorkedListView = TemplateList;
 
             if (mainDBConnection == null)
                 return;
             SqlCeCommand scc = new SqlCeCommand();
             scc.Connection = mainDBConnection;
 
-            scc.CommandText = "SELECT ImageId, ImageName FROM Image;";
+            scc.CommandText = "SELECT TemplateId, Description, CreationDate, DataWidth, DataHeight, TemplateCategoryId FROM Template;";
 
             WorkedListView.BeginUpdate();
             WorkedListView.Items.Clear();
@@ -52,8 +51,12 @@ namespace PictureDBManager
                 {
                     while (scedr.Read())
                     {
-                        ListViewItem lvi = new ListViewItem(scedr["ImageName"].ToString());
-                        lvi.Tag = System.Convert.ToInt32(scedr["ImageId"].ToString());
+                        ListViewItem lvi = new ListViewItem(scedr["Description"].ToString());
+                        lvi.Tag = System.Convert.ToInt32(scedr["TemplateId"].ToString());
+                        lvi.SubItems.Add(scedr["DataWidth"].ToString());
+                        lvi.SubItems.Add(scedr["DataHeight"].ToString());
+                        lvi.SubItems.Add(DateTime.Parse(scedr["CreationDate"].ToString()).ToString());
+
                         WorkedListView.Items.Add(lvi);
                     }
                 }
@@ -79,18 +82,18 @@ namespace PictureDBManager
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (listView1.SelectedItems != null)
+            if (TemplateList.SelectedItems != null)
             {
-                if (listView1.SelectedItems.Count == 0)
+                if (TemplateList.SelectedItems.Count == 0)
                     return;
 
-                int ImageId = (int)listView1.SelectedItems[0].Tag;
+                int TemplateId = (int)TemplateList.SelectedItems[0].Tag;
 
                 SqlCeCommand scc = new SqlCeCommand();
                 scc.Connection = mainDBConnection;
 
-                scc.CommandText = "SELECT ImageId, ImageData FROM Image WHERE ImageId = @ImageId;";
-                scc.Parameters.Add("@ImageId", SqlDbType.Int).Value = ImageId;
+                scc.CommandText = "SELECT TemplateId, Data FROM Template WHERE TemplateId = @TemplateId;";
+                scc.Parameters.Add("@TemplateId", SqlDbType.Int).Value = TemplateId;
 
                 SqlCeDataReader scedr = scc.ExecuteReader();
 
@@ -98,24 +101,17 @@ namespace PictureDBManager
                 {
                     if (scedr.Read())
                     {
+                        
                         if (scedr.IsDBNull(1))
                             return;
-
+                        
                         int ImageBufferSize = (int)scedr.GetBytes(1, 0, null, 0, int.MaxValue);
                         byte[] ImageBuffer = new byte[ImageBufferSize];
                         scedr.GetBytes(1, 0, ImageBuffer, 0, ImageBufferSize);
-                        System.IO.MemoryStream ms = new System.IO.MemoryStream(ImageBuffer);
-                        try
-                        {
-                            MainImage.Image = new Bitmap(ms);
-                        }
-                        catch (Exception Ex)
-                        {
-                            MessageBox.Show(this, Ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
 
-                        ms.Close();
-                        CurrentRecordID = ImageId; 
+                        Program.dlp.FromBinary(ImageBuffer);
+                        MainImage.Image = Program.dlp.BitmapFromFirstLayer();
+
                     }
                 }
             }
@@ -127,6 +123,11 @@ namespace PictureDBManager
 
         private void tsbAddImg_Click(object sender, EventArgs e)
         {
+            if ((new TrainingForm()).ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+            {
+                LoadTemplates();
+            }
+            /*
             AddImageForm dlg = new AddImageForm();
             if (dlg.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {
@@ -162,11 +163,12 @@ namespace PictureDBManager
                 LoadImages();
 
             }
+            */
         }
 
         private void tsbDeleteImg_Click(object sender, EventArgs e)
         {
-            ListView WorkListView = listView1;
+            ListView WorkListView = TemplateList;
 
             ListView.SelectedListViewItemCollection SelectedItems =
                 WorkListView.SelectedItems;
@@ -178,6 +180,7 @@ namespace PictureDBManager
                 return;
 
             WorkListView.BeginUpdate();
+            /*
             try
             {
                 SqlCeCommand scc = new SqlCeCommand();
@@ -204,7 +207,7 @@ namespace PictureDBManager
             {
                 MessageBox.Show(this, Ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
+            */
             WorkListView.EndUpdate();
         }
     }

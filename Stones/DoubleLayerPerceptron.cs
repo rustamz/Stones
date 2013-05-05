@@ -203,22 +203,16 @@ namespace Stones
         }
 
         /// <summary>
-        /// Функция для обучения нейросети
+        /// Функция для для слоя
         /// </summary>
-        /// <param name="OriginalSignal">Набор сигналов, которые должны появляться на выходе.</param>
-        public void Training(double[,] OriginalSignal)
+        public void Training()
         {
-            if (OriginalSignal.GetLength(0) != input.GetLength(0)
-               || OriginalSignal.GetLength(1) != input.GetLength(1))
-            {
-                throw new ArgumentException("Размер переданного эталона не совпадает с размером обучаемой сети");
-            }
-
             for (int layer_i = 0; layer_i < firstNeuronLayer.GetLength(0); layer_i++)
             {
                 for (int layer_j = 0; layer_j < firstNeuronLayer.GetLength(1); layer_j++)
                 {
-                    firstNeuronLayer[layer_i, layer_j].Weight += ActFunc.GetWeight(input[layer_i, layer_j], OriginalSignal[layer_i, layer_j]);
+                    // если точка закрашена, то увеличиваем значения веса на единицу, иначе - уменьшаем
+                    firstNeuronLayer[layer_i, layer_j].Weight += input[layer_i, layer_j] >= 1 ? 1 : -1;
                 }
             }            
         }
@@ -241,6 +235,10 @@ namespace Stones
             fs.Close();
         }
 
+        /// <summary>
+        /// Преобразует матрицу весов черно-белое изображение
+        /// </summary>
+        /// <returns>Черно-белое изображение</returns>
         public Bitmap BitmapFromFirstLayer()
         {
             Bitmap bm = new Bitmap(firstNeuronLayer.GetLength(0), firstNeuronLayer.GetLength(1));
@@ -326,6 +324,9 @@ namespace Stones
             return bm;
         }
 
+        /// <summary>
+        /// Сбрасывает матрицу весов до 0
+        /// </summary>
         public void ClearWeight()
         {
             for (int layer_i = 0; layer_i < firstNeuronLayer.GetLength(0); layer_i++)
@@ -335,6 +336,56 @@ namespace Stones
                     firstNeuronLayer[layer_i, layer_j].Weight = 0;
                 }
             }  
+        }
+
+        /// <summary>
+        /// преобразует матрицу весов в массив байт
+        /// </summary>
+        /// <returns></returns>
+        public byte[] GetBinary()
+        {
+            // Линеаризируем исходную матрицу весов
+            double[] LineWeight = new double[firstNeuronLayer.GetLength(0) * firstNeuronLayer.GetLength(1)];
+            for (int layer_i = 0; layer_i < firstNeuronLayer.GetLength(0); layer_i++)
+            {
+                for (int layer_j = 0; layer_j < firstNeuronLayer.GetLength(1); layer_j++)
+                {
+                    LineWeight[layer_i * firstNeuronLayer.GetLength(0) + layer_j] = firstNeuronLayer[layer_i, layer_j].Weight;
+                }
+            }
+
+            // Массив байт на возвращение
+            byte[] Result = new byte[firstNeuronLayer.GetLength(0) * firstNeuronLayer.GetLength(1) * sizeof(double)];
+
+            // Копируем байты в выходной массив
+            Buffer.BlockCopy(LineWeight, 0, Result, 0, Result.Length);
+
+            return Result;
+        }
+
+
+        /// <summary>
+        /// преобразует матрицу весов в массив байт
+        /// </summary>
+        /// <returns></returns>
+        public void FromBinary(byte[] WeightBinary)
+        {
+            if ((firstNeuronLayer.GetLength(0) * firstNeuronLayer.GetLength(1) * sizeof(double)) != WeightBinary.Length)
+            {
+                ClearWeight();
+            }
+
+            double[] LineWeight = new double[WeightBinary.Length / sizeof(double)];
+
+            Buffer.BlockCopy(WeightBinary, 0, LineWeight, 0, WeightBinary.Length);
+
+            for (int layer_i = 0; layer_i < firstNeuronLayer.GetLength(0); layer_i++)
+            {
+                for (int layer_j = 0; layer_j < firstNeuronLayer.GetLength(1); layer_j++)
+                {
+                    firstNeuronLayer[layer_i, layer_j].Weight = LineWeight[layer_i * firstNeuronLayer.GetLength(0) + layer_j]; 
+                }
+            }
         }
 
         #endregion
