@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
-using PictureDBManager;
 using System.Data.SqlServerCe;
 using System.Collections.Generic;
 
