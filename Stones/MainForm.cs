@@ -185,8 +185,29 @@ namespace Stones
         {
             if (bufferImage.Image != null)
             {
-                bufferImage.Contour();
+                List<Bitmap> ContouredBitmaps = new List<Bitmap>();
+                try
+                {
+                    bufferImage.Contour(ContouredBitmaps, Program.NeuronSize, Program.NeuronSize);
+                }
+                catch (Exception Ex)
+                {
+                    MessageBox.Show(this, Ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 pbMainImage.Image = bufferImage.Image;
+
+                ImageList ImgList = new ImageList();
+                ImgList.ImageSize = new System.Drawing.Size(100, 100);
+                lvFoundedImages.LargeImageList = ImgList;
+                lvFoundedImages.Items.Clear();
+
+                for (int i = 0; i < ContouredBitmaps.Count; i++)
+                {
+                    ImgList.Images.Add(ContouredBitmaps[i] as Image);
+                    lvFoundedImages.Items.Add(i.ToString(), ImgList.Images.Count - 1);
+                }
+                
             }
         }
     }

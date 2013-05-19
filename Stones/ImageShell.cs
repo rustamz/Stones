@@ -30,7 +30,14 @@ namespace Stones
                 return false;
             }
         }
-        
+
+        /// StretchBlt
+        [DllImport("GDI32.DLL", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+        public static extern bool StretchBlt(IntPtr hdcDest, int nXDest, int nYDest, int nDestWidth, int nDestHeight,
+            IntPtr hdcSrc, int nXSrc, int nYSrc, int nSrcWidth, int nSrcHeight, Int32 dwRop);
+
+        private System.Object lockThis = new System.Object();
+
         private Bitmap originalBitmap = null;
         private Bitmap workBitmap = null;
 
@@ -172,16 +179,15 @@ namespace Stones
             }
         }
 
-        private void MakeСontour(Bitmap SourceBmp, out Bitmap DestinationBmp)
+        private List<Contour> GetContour(Bitmap SourceBmp)
         {
-            DestinationBmp = (Bitmap)SourceBmp.Clone();
             Bitmap MonochromeSource = (Bitmap)SourceBmp.Clone();
             MakeMonochrome(MonochromeSource, 127);
 
             // просмотренные точки
             ViewedPointList ViewedPoints = new ViewedPointList();
 
-            //
+            // список найденных контуров
             List<Contour> ContourList = new List<Contour>();
 
             for (int i = 0; i < MonochromeSource.Width; i++)
@@ -194,7 +200,7 @@ namespace Stones
                         CountorPoint SeekerHead = new CountorPoint(i, j);
                         Stack<CountorPoint> SeekerHeadStack = new Stack<CountorPoint>();
                         SeekerHeadStack.Push(SeekerHead);
-                        
+
                         // создаем контур и добавляем в него первую точку
                         Contour ContoureItem = new Contour();
                         ContoureItem.Add(SeekerHead);
@@ -206,7 +212,7 @@ namespace Stones
                         while (SeekerHeadStack.Count != 0)
                         {
                             CountorPoint CurrentSeekerHead = SeekerHeadStack.Peek();
-                            
+
                             // 1
                             if (CurrentSeekerHead.X - 1 >= 0 && CurrentSeekerHead.Y - 1 >= 0)
                             {
@@ -311,11 +317,58 @@ namespace Stones
                 }
             }
 
+            return ContourList;
+        }
+
+        private void MakeСontour(Bitmap SourceBmp, out Bitmap DestinationBmp, List<Bitmap> ContouredBitmaps = null, int Width = -1, int Height = -1)
+        {
+            DestinationBmp = (Bitmap)SourceBmp.Clone();
+
+            List<Contour> ContourList = GetContour(SourceBmp);
+
+            List<Rectangle> RectangleList = new List<Rectangle>();
             for (int i = 0; i < ContourList.Count; i++)
+            {
+                RectangleList.Add(ContourList[i].GetRectangle());
+            }
+
+            for (int i = 0; i < RectangleList.Count; i++)
             {
                 Graphics gr = Graphics.FromImage(DestinationBmp as Image);
 
-                gr.DrawRectangle(new Pen(Color.Green, 1), ContourList[i].GetRectangle());
+                gr.DrawRectangle(new Pen(Color.Green, 1), RectangleList[i]);
+            }
+
+            if (ContouredBitmaps != null && Width > 0 && Height > 0)
+            {
+                Graphics SourceGraphic = Graphics.FromImage(SourceBmp);
+                Brush FillerBrush = new SolidBrush(Color.White);
+                Region FillerRegion = new Region(new Rectangle(0, 0, Width, Height));
+
+                for (int i = 0; i < RectangleList.Count; i++)
+                {
+                    Bitmap NewBitmap = new Bitmap(Width, Height);
+                    Graphics NewImgGraphic = Graphics.FromImage(NewBitmap);
+                    NewImgGraphic.FillRegion(FillerBrush, FillerRegion);
+
+                    double ZoomByX = (double)(NewBitmap.Width) / RectangleList[i].Width;
+                    double ZoomByY = (double)(NewBitmap.Height) / RectangleList[i].Height;
+                    double ZoomCommon = 1;
+
+                    if (ZoomByX < ZoomByY)
+                        ZoomCommon = ZoomByX;
+                    else
+                        ZoomCommon = ZoomByY;
+
+                    int NewImgWidth = (int)(ZoomCommon * RectangleList[i].Width);
+                    int NewImgHeight = (int)(ZoomCommon * RectangleList[i].Height);
+
+                    NewImgGraphic.DrawImage(SourceBmp,
+                        new RectangleF((NewBitmap.Width - NewImgWidth) / 2, (NewBitmap.Height - NewImgHeight) / 2, NewImgWidth, NewImgHeight),
+                        RectangleList[i], GraphicsUnit.Pixel);
+
+                    ContouredBitmaps.Add(NewBitmap);
+                }
             }
         }
 
@@ -353,9 +406,9 @@ namespace Stones
             Sobel(originalBitmap, out workBitmap);
         }
 
-        public void Contour()
+        public void Contour(List<Bitmap> ContouredBitmaps = null, int Width = -1, int Height = -1)
         {
-            MakeСontour(originalBitmap, out workBitmap);
+            MakeСontour(originalBitmap, out workBitmap, ContouredBitmaps, Width, Height);
         }
 
         public byte[,] RedSource()
