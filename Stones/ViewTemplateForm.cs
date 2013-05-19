@@ -127,43 +127,6 @@ namespace Stones
             {
                 LoadTemplates();
             }
-            /*
-            AddImageForm dlg = new AddImageForm();
-            if (dlg.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
-            {
-                byte[] Png = null;
-                try
-                {
-                    Png = dlg.GetPngImage();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                    return;
-                }
-
-                string PngName = dlg.PictureName;
-                SqlCeCommand scc = new SqlCeCommand();
-                scc.Connection = mainDBConnection;
-
-                scc.CommandText = "INSERT INTO Image (ImageName, ImageData) VALUES(@ImageName, @ImageData)";
-
-                scc.Parameters.Add("@ImageName", SqlDbType.NVarChar, 100).Value = PngName;
-                scc.Parameters.Add("@ImageData", SqlDbType.Image, Png.Length).Value = Png;
-
-                try
-                {
-                    scc.ExecuteNonQuery();
-                }
-                catch (Exception Ex)
-                {
-                    MessageBox.Show(this, Ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-
-                LoadImages();
-
-            }
-            */
         }
 
         private void tsbDeleteImg_Click(object sender, EventArgs e)
@@ -180,34 +143,29 @@ namespace Stones
                 return;
 
             WorkListView.BeginUpdate();
-            /*
+            
             try
             {
                 SqlCeCommand scc = new SqlCeCommand();
                 scc.Connection = mainDBConnection;
-                scc.Parameters.Add("@ImageId", SqlDbType.Int);
+                scc.Parameters.Add("@TemplateId", SqlDbType.Int);
 
                 foreach (ListViewItem Item in SelectedItems)
                 {
-                    int ImageId = (int)Item.Tag;
-                    scc.CommandText = "DELETE FROM Image WHERE ImageId = @ImageId;";
-                    scc.Parameters["@ImageId"].Value = ImageId;
+                    int TemplateId = (int)Item.Tag;
+                    scc.CommandText = "DELETE FROM Template WHERE TemplateId = @TemplateId;";
+                    scc.Parameters["@TemplateId"].Value = TemplateId;
                     scc.ExecuteNonQuery();
 
                     WorkListView.Items.Remove(Item);
-
-                    if (ImageId == CurrentRecordID)
-                    {
-                        MainImage.Image = null;
-                        CurrentRecordID = -1;
-                    }
+                    MainImage.Image = null;
                 }
             }
             catch (Exception Ex)
             {
                 MessageBox.Show(this, Ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            */
+            
             WorkListView.EndUpdate();
         }
     }
