@@ -11,6 +11,26 @@ namespace Stones
 {
     class ImageShell
     {
+        private class ViewedPointList : List<CountorPoint>
+        {
+            public ViewedPointList() : base()
+            {
+
+            }
+
+            public bool ContainsPoint(CountorPoint Item)
+            {
+                foreach (CountorPoint CountorPointItem in this)
+                {
+                    if (CountorPointItem.X == Item.X && CountorPointItem.Y == Item.Y)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+        
         private Bitmap originalBitmap = null;
         private Bitmap workBitmap = null;
 
@@ -152,6 +172,153 @@ namespace Stones
             }
         }
 
+        private void MakeСontour(Bitmap SourceBmp, out Bitmap DestinationBmp)
+        {
+            DestinationBmp = (Bitmap)SourceBmp.Clone();
+            Bitmap MonochromeSource = (Bitmap)SourceBmp.Clone();
+            MakeMonochrome(MonochromeSource, 127);
+
+            // просмотренные точки
+            ViewedPointList ViewedPoints = new ViewedPointList();
+
+            //
+            List<Contour> ContourList = new List<Contour>();
+
+            for (int i = 0; i < MonochromeSource.Width; i++)
+            {
+                for (int j = 0; j < MonochromeSource.Height; j++)
+                {
+                    // если точка черная и она ещё не просмотрена
+                    if (MonochromeSource.GetPixel(i, j).R == 0 && !ViewedPoints.ContainsPoint(new CountorPoint(i, j)))
+                    {
+                        CountorPoint SeekerHead = new CountorPoint(i, j);
+                        Stack<CountorPoint> SeekerHeadStack = new Stack<CountorPoint>();
+                        SeekerHeadStack.Push(SeekerHead);
+                        
+                        // создаем контур и добавляем в него первую точку
+                        Contour ContoureItem = new Contour();
+                        ContoureItem.Add(SeekerHead);
+
+                        // помечаем точку как использованную
+                        ViewedPoints.Add(SeekerHead);
+
+                        // перебираем точки пока контур не закончен
+                        while (SeekerHeadStack.Count != 0)
+                        {
+                            CountorPoint CurrentSeekerHead = SeekerHeadStack.Peek();
+                            
+                            // 1
+                            if (CurrentSeekerHead.X - 1 >= 0 && CurrentSeekerHead.Y - 1 >= 0)
+                            {
+                                CountorPoint CurrentPoint = new CountorPoint(CurrentSeekerHead.X - 1, CurrentSeekerHead.Y - 1);
+                                if (MonochromeSource.GetPixel(CurrentPoint.X, CurrentPoint.Y).R == 0 && !ViewedPoints.ContainsPoint(CurrentPoint))
+                                {
+                                    ViewedPoints.Add(CurrentPoint);
+                                    SeekerHeadStack.Push(new CountorPoint(CurrentSeekerHead.X - 1, CurrentSeekerHead.Y - 1));
+                                    continue;
+                                }
+                            }
+
+                            // 2
+                            if (CurrentSeekerHead.Y - 1 >= 0)
+                            {
+                                CountorPoint CurrentPoint = new CountorPoint(CurrentSeekerHead.X, CurrentSeekerHead.Y - 1);
+                                if (MonochromeSource.GetPixel(CurrentPoint.X, CurrentPoint.Y).R == 0 && !ViewedPoints.ContainsPoint(CurrentPoint))
+                                {
+                                    ViewedPoints.Add(CurrentPoint);
+                                    SeekerHeadStack.Push(new CountorPoint(CurrentSeekerHead.X, CurrentSeekerHead.Y - 1));
+                                    continue;
+                                }
+                            }
+
+                            // 3
+                            if (CurrentSeekerHead.X + 1 < MonochromeSource.Width && CurrentSeekerHead.Y - 1 >= 0)
+                            {
+                                CountorPoint CurrentPoint = new CountorPoint(CurrentSeekerHead.X + 1, CurrentSeekerHead.Y - 1);
+                                if (MonochromeSource.GetPixel(CurrentPoint.X, CurrentPoint.Y).R == 0 && !ViewedPoints.ContainsPoint(CurrentPoint))
+                                {
+                                    ViewedPoints.Add(CurrentPoint);
+                                    SeekerHeadStack.Push(new CountorPoint(CurrentSeekerHead.X + 1, CurrentSeekerHead.Y - 1));
+                                    continue;
+                                }
+                            }
+
+                            // 4
+                            if (CurrentSeekerHead.X + 1 < MonochromeSource.Width)
+                            {
+                                CountorPoint CurrentPoint = new CountorPoint(CurrentSeekerHead.X + 1, CurrentSeekerHead.Y);
+                                if (MonochromeSource.GetPixel(CurrentPoint.X, CurrentPoint.Y).R == 0 && !ViewedPoints.ContainsPoint(CurrentPoint))
+                                {
+                                    ViewedPoints.Add(CurrentPoint);
+                                    SeekerHeadStack.Push(new CountorPoint(CurrentSeekerHead.X + 1, CurrentSeekerHead.Y));
+                                    continue;
+                                }
+                            }
+                            // 5
+                            if (CurrentSeekerHead.X + 1 < MonochromeSource.Width && CurrentSeekerHead.Y + 1 < MonochromeSource.Height)
+                            {
+                                CountorPoint CurrentPoint = new CountorPoint(CurrentSeekerHead.X + 1, CurrentSeekerHead.Y + 1);
+                                if (MonochromeSource.GetPixel(CurrentPoint.X, CurrentPoint.Y).R == 0 && !ViewedPoints.ContainsPoint(CurrentPoint))
+                                {
+                                    ViewedPoints.Add(CurrentPoint);
+                                    SeekerHeadStack.Push(new CountorPoint(CurrentSeekerHead.X + 1, CurrentSeekerHead.Y + 1));
+                                    continue;
+                                }
+                            }
+
+                            // 6
+                            if (CurrentSeekerHead.Y + 1 < MonochromeSource.Height)
+                            {
+                                CountorPoint CurrentPoint = new CountorPoint(CurrentSeekerHead.X, CurrentSeekerHead.Y + 1);
+                                if (MonochromeSource.GetPixel(CurrentPoint.X, CurrentPoint.Y).R == 0 && !ViewedPoints.ContainsPoint(CurrentPoint))
+                                {
+                                    ViewedPoints.Add(CurrentPoint);
+                                    SeekerHeadStack.Push(new CountorPoint(CurrentSeekerHead.X, CurrentSeekerHead.Y + 1));
+                                    continue;
+                                }
+                            }
+
+                            // 7
+                            if (CurrentSeekerHead.X - 1 >= 0 && CurrentSeekerHead.Y + 1 < MonochromeSource.Height)
+                            {
+                                CountorPoint CurrentPoint = new CountorPoint(CurrentSeekerHead.X - 1, CurrentSeekerHead.Y + 1);
+                                if (MonochromeSource.GetPixel(CurrentPoint.X, CurrentPoint.Y).R == 0 && !ViewedPoints.ContainsPoint(CurrentPoint))
+                                {
+                                    ViewedPoints.Add(CurrentPoint);
+                                    SeekerHeadStack.Push(new CountorPoint(CurrentSeekerHead.X - 1, CurrentSeekerHead.Y + 1));
+                                    continue;
+                                }
+                            }
+
+                            // 8
+                            if (CurrentSeekerHead.X - 1 >= 0)
+                            {
+                                CountorPoint CurrentPoint = new CountorPoint(CurrentSeekerHead.X - 1, CurrentSeekerHead.Y);
+                                if (MonochromeSource.GetPixel(CurrentPoint.X, CurrentPoint.Y).R == 0 && !ViewedPoints.ContainsPoint(CurrentPoint))
+                                {
+                                    ViewedPoints.Add(CurrentPoint);
+                                    SeekerHeadStack.Push(CurrentPoint);
+                                    continue;
+                                }
+                            }
+
+                            ContoureItem.Add(CurrentSeekerHead);
+                            SeekerHeadStack.Pop();
+                        }
+
+                        ContourList.Add(ContoureItem);
+                    }
+                }
+            }
+
+            for (int i = 0; i < ContourList.Count; i++)
+            {
+                Graphics gr = Graphics.FromImage(DestinationBmp as Image);
+
+                gr.DrawRectangle(new Pen(Color.Green, 1), ContourList[i].GetRectangle());
+            }
+        }
+
         public ImageShell()
         {
             //
@@ -184,6 +351,11 @@ namespace Stones
         public void Soble()
         {
             Sobel(originalBitmap, out workBitmap);
+        }
+
+        public void Contour()
+        {
+            MakeСontour(originalBitmap, out workBitmap);
         }
 
         public byte[,] RedSource()

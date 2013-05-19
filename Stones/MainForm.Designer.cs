@@ -42,9 +42,10 @@
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmiDBManager = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiShowTraining = new System.Windows.Forms.ToolStripMenuItem();
+            this.опознатьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sbStatusBar = new System.Windows.Forms.StatusStrip();
             this.tsslFileName = new System.Windows.Forms.ToolStripStatusLabel();
-            this.опознатьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiContour = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlImageContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbMainImage)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -116,6 +117,7 @@
             this.tsmiMakeGray,
             this.tsmiMonochrome,
             this.tsmiSobel,
+            this.tsmiContour,
             this.toolStripMenuItem2,
             this.tsmiDBManager,
             this.tsmiShowTraining,
@@ -164,6 +166,13 @@
             this.tsmiShowTraining.Text = "Обучение";
             this.tsmiShowTraining.Click += new System.EventHandler(this.tsmiShowTraining_Click);
             // 
+            // опознатьToolStripMenuItem
+            // 
+            this.опознатьToolStripMenuItem.Name = "опознатьToolStripMenuItem";
+            this.опознатьToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.опознатьToolStripMenuItem.Text = "Опознать";
+            this.опознатьToolStripMenuItem.Click += new System.EventHandler(this.опознатьToolStripMenuItem_Click);
+            // 
             // sbStatusBar
             // 
             this.sbStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -180,12 +189,12 @@
             this.tsslFileName.Size = new System.Drawing.Size(69, 17);
             this.tsslFileName.Text = "Имя файла";
             // 
-            // опознатьToolStripMenuItem
+            // tsmiContour
             // 
-            this.опознатьToolStripMenuItem.Name = "опознатьToolStripMenuItem";
-            this.опознатьToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-            this.опознатьToolStripMenuItem.Text = "Опознать";
-            this.опознатьToolStripMenuItem.Click += new System.EventHandler(this.опознатьToolStripMenuItem_Click);
+            this.tsmiContour.Name = "tsmiContour";
+            this.tsmiContour.Size = new System.Drawing.Size(172, 22);
+            this.tsmiContour.Text = "Поиск контура";
+            this.tsmiContour.Click += new System.EventHandler(this.tsmiContour_Click);
             // 
             // MainForm
             // 
@@ -230,6 +239,7 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiDBManager;
         private System.Windows.Forms.ToolStripMenuItem tsmiShowTraining;
         private System.Windows.Forms.ToolStripMenuItem опознатьToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmiContour;
     }
 }
 

@@ -180,5 +180,14 @@ namespace Stones
                 MessageBox.Show(this, Ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void tsmiContour_Click(object sender, EventArgs e)
+        {
+            if (bufferImage.Image != null)
+            {
+                bufferImage.Contour();
+                pbMainImage.Image = bufferImage.Image;
+            }
+        }
     }
 }
